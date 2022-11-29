@@ -13,7 +13,7 @@ export class Track {
   listens: number;
 
   @Prop()
-  track: string;
+  text: string;
 
   @Prop()
   artist: string;
