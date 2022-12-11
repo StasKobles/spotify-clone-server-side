@@ -1,23 +1,42 @@
 import { Button, Grid, TextField } from "@mui/material";
+import axios from "axios";
+import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
+
+import { useInput } from "../../hooks/useInput";
 import MainLayout from "../../layouts/MainLayout";
 import { ITrack } from "../../types/track";
-const TrackPage = () => {
-  const track: ITrack = {
-    _id: "6387888073f8015daa4ddb6e",
-    name: "What's My Age Again?",
-    listens: 0,
-    text: "It's understood, I said it many ways\nToo scared to run, I'm just scared to stay\nI said I'd leave, I can never leave her\nIf I did, you know I'd never cheat her\nBut this I ask, it's what I want to know\nHow would you feel, if I should choose to go?\nAnother guy, you think it'd be unlikely\nAnother guy, you think he'd want to fight me\nShe's a dove, she's a fuckin' nightmare\nUnpredictable, it's my mistake to stay here\nOn the go and it's way too late to play\nI need a girl that I can train\nI heard it once, I'm sure I heard it twice\nMy dad used to give me all of his advice\nHe would say you gotta turn your back and run now\nCome on son, you haven't got a chance now\nShe's a dove, she's a fuckin' nightmare\nUnpredictable, it was my mistake to stay here\nOn the go and it's way too late to play\nI need a girl that I can train\nShe's a dove, she's a fuckin' nightmare\nUnpredictable, it was my mistake to stay here\nOn the go and it's way too late to play\nI need a girl that I can train\nNeed a girl that I can train\nNeed a girl that I can train\nTurn your back and run now\nYou haven't got a chance now\nNeed a girl that I can train\nNeed a girl that I can train\nTurn your back and run now\nYou haven't got a chance now\n",
-    artist: "blink-182",
-    picture: "/../static/album_1.webp",
-    audio: "audio/cadae346-1d1e-4c99-8651-f2553b9326d7.mp3",
-    comments: [],
-  };
+
+const TrackPage = ({ serverTrack }) => {
+  const [track, setTrack] = useState<ITrack>(serverTrack);
   const router = useRouter();
+  const username = useInput("");
+  const text = useInput("");
+
+  const addComment = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4200/tracks/comment",
+        {
+          username: username.value,
+          text: text.value,
+          trackId: track._id,
+        }
+      );
+      setTrack({ ...track, comments: [...track.comments, response.data] });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
-    <MainLayout>
+    <MainLayout
+      title={"Music platform - " + track.name + " - " + track.artist}
+      keywords={`S{track.name}, ${track.artist}, Music, Song`}
+      description={`${track.name} track by ${track.artist}`}
+    >
       <Button
         variant="outlined"
         size="large"
@@ -27,12 +46,12 @@ const TrackPage = () => {
       </Button>
       <Grid container marginTop={3}>
         <Image
-          src={track.picture}
+          src={"http://localhost:4200/" + track.picture}
           width={200}
           height={200}
           alt={"track logo"}
         />
-        <div className={"trackPageMargins"}>
+        <div style={{ marginLeft: "20px" }}>
           <h1>Track name - {track.name}</h1>
           <h1> Artist - {track.artist}</h1>
           <h1>Listened {track.listens} times</h1>
@@ -42,9 +61,9 @@ const TrackPage = () => {
       <p>{track.text}</p>
       <h1>Comments</h1>
       <Grid container>
-        <TextField label="Your name" fullWidth />
-        <TextField label="Comment" fullWidth multiline rows={4} />
-        <Button>Send</Button>
+        <TextField {...username} label="Your name" fullWidth />
+        <TextField {...text} label="Comment" fullWidth multiline rows={4} />
+        <Button onClick={addComment}>Send</Button>
       </Grid>
       <div>
         {track.comments.map((comment) => (
@@ -59,3 +78,14 @@ const TrackPage = () => {
 };
 
 export default TrackPage;
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const response = await axios.get(
+    "http://localhost:4200/tracks/" + params?.id
+  );
+  return {
+    props: {
+      serverTrack: response.data,
+    },
+  };
+};

@@ -1,11 +1,15 @@
 import { HYDRATE } from "next-redux-wrapper";
 import { combineReducers } from "redux";
+
 import { playerReducer } from "./playerReducers";
+import { trackReducer } from "./trackReducer";
 
 const rootReducer = combineReducers({
   player: playerReducer,
+  track: trackReducer,
 });
-export const reducer = (state:any, action:any) => {
+
+export const reducer = (state, action) => {
   if (action.type === HYDRATE) {
     const nextState = {
       ...state, // use previous state
@@ -17,4 +21,5 @@ export const reducer = (state:any, action:any) => {
     return rootReducer(state, action);
   }
 };
+
 export type RootState = ReturnType<typeof rootReducer>;
