@@ -10,8 +10,8 @@ import MainLayout from "../../layouts/MainLayout";
 
 const Create = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [picture, setPicture] = useState(null);
-  const [audio, setAudio] = useState(null);
+  const [picture, setPicture] = useState("");
+  const [audio, setAudio] = useState("");
   const name = useInput("");
   const artist = useInput("");
   const text = useInput("");

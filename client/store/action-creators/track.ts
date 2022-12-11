@@ -16,7 +16,7 @@ export const fetchTracks = () => {
     }
   };
 };
-export const searchTracks = (query) => {
+export const searchTracks = (query: any) => {
   return async (dispatch: Dispatch<TrackAction>) => {
     try {
       const response = await axios.get(

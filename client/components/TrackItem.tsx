@@ -15,7 +15,7 @@ interface TrackItemProps {
 const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
   const router = useRouter();
   const { playTrack, pauseTrack, setActiveTrack } = useActions();
-  const play = (e) => {
+  const play = (e: any) => {
     e.stopPropagation();
     setActiveTrack(track);
     playTrack();

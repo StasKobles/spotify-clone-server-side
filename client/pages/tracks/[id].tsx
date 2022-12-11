@@ -9,7 +9,7 @@ import { useInput } from "../../hooks/useInput";
 import MainLayout from "../../layouts/MainLayout";
 import { ITrack } from "../../types/track";
 
-const TrackPage = ({ serverTrack }) => {
+const TrackPage = ({ serverTrack }: any) => {
   const [track, setTrack] = useState<ITrack>(serverTrack);
   const router = useRouter();
   const username = useInput("");
